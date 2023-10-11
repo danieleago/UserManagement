@@ -1,4 +1,4 @@
-## Readme
+# User management
 
 ### Building
 
@@ -13,4 +13,4 @@ mvn clean package
 
 ### Quick start
 
-run `docker compose up` and Compose will start and run your entire
+run `docker compose up` and User Management will start
