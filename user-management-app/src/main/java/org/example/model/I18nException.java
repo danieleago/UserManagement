@@ -2,9 +2,9 @@ package org.example.model;
 
 public class I18nException extends RuntimeException{
 
-    private int status;
-    private String code;
-    private String message;
+    private final int status;
+    private final String code;
+    private final String message;
 
     public I18nException(int status, String code, String message) {
         this.status = status;
@@ -16,24 +16,12 @@ public class I18nException extends RuntimeException{
         return status;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
     public String getCode() {
         return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     @Override
     public String getMessage() {
         return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 }

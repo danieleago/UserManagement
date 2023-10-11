@@ -16,7 +16,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -24,6 +23,8 @@ public class UserManagementServiceImpl implements UserManagementService {
     private static final Logger log = LoggerFactory.getLogger(UserManagementServiceImpl.class);
 
     private static final String COMMA_DELIMITER = ",";
+    public static final String ERROR_USER_NOT_FOUND = "error.user.notFound";
+    public static final String USER_NOT_FOUND = "User not found";
 
     @Autowired
     private UserManagementMapper mapper;
@@ -33,7 +34,7 @@ public class UserManagementServiceImpl implements UserManagementService {
         log.debug("get user by id {}", id);
         User userById = mapper.getUserById(id);
         if (userById == null)
-            throw new I18nException(404, "error.user.notFound", "User not found");
+            throw new I18nException(404, ERROR_USER_NOT_FOUND, USER_NOT_FOUND);
         return userById;
     }
 
@@ -59,7 +60,7 @@ public class UserManagementServiceImpl implements UserManagementService {
         log.debug("update user {}", user);
         boolean upload = mapper.updateUser(user);
         if (!upload)
-            throw new I18nException(404, "error.user.notFound", "User not found");
+            throw new I18nException(404, ERROR_USER_NOT_FOUND, USER_NOT_FOUND);
     }
 
     @Override
@@ -67,7 +68,7 @@ public class UserManagementServiceImpl implements UserManagementService {
         log.debug("delete user with id {}", id);
         boolean upload = mapper.deleteUser(id);
         if (!upload)
-            throw new I18nException(404, "error.user.notFound", "User not found");
+            throw new I18nException(404, ERROR_USER_NOT_FOUND, USER_NOT_FOUND);
     }
 
     @Override
@@ -83,9 +84,9 @@ public class UserManagementServiceImpl implements UserManagementService {
             String line;
             while ((line = reader.readLine()) != null) {
                 List<String> row = Arrays.asList(line.split(COMMA_DELIMITER));
-                if (row.isEmpty())
-                    continue;
-                else if (row.size() != 4){
+                if (row.isEmpty()) {
+                    // NOOP
+                }else if (row.size() != 4){
                     throw new I18nException(400, "error.user.upload", "Malformatted CSV file");
                 } else {
                     userList.add(new UserBuilder()
