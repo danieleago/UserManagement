@@ -1,0 +1,22 @@
+spring:
+  profiles:
+    active:
+      - dev
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+
+logging:
+  level:
+    org.example: DEBUG
+    org.springframework: DEBUG
+    org.mybatis: DEBUG
+    org.apache: DEBUG
+    springfox: DEBUG
+    org.hibernate: DEBUG
+
+server:
+  servlet:
+    context-path: /management

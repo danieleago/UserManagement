@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.UserManagementMapper">
+    <resultMap id="userMap" type="User">
+        <id column="id" property="id"/>
+        <result column="first_name" property="firstName"/>
+        <result column="last_name" property="lastName"/>
+        <result column="address" property="address"/>
+        <result column="email" property="email"/>
+    </resultMap>
+
+    <select id="insertUser" resultType="integer">
+        INSERT INTO user_management(first_name, last_name, email, address, date_ins, date_upd)
+        VALUES(#{user.firstName}, #{user.lastName}, #{user.email}, #{user.address}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        returning id;
+    </select>
+
+    <select id="getUserById" resultMap="userMap">
+        SELECT * FROM user_management WHERE id = #{id} AND date_del is NULL;
+    </select>
+
+    <select id="searchUser" resultMap="userMap">
+        SELECT * FROM user_management
+        WHERE date_del is NULL
+        <if test="keyword != null">
+            AND to_tsvector('italian', first_name||' '||last_name) @@ to_tsquery('italian', #{keyword})
+        </if>
+        ORDER BY last_name;
+    </select>
+
+    <update id="updateUser">
+        UPDATE user_management
+        <set>
+            first_name = #{user.firstName},
+            last_name = #{user.lastName},
+            email = #{user.email},
+            address = #{user.address},
+            date_upd = CURRENT_TIMESTAMP
+        </set>
+        WHERE id = #{user.id}
+        AND date_del is NULL;
+    </update>
+
+    <update id="deleteUser">
+        UPDATE user_management
+        <set>
+            date_del = CURRENT_TIMESTAMP
+        </set>
+        WHERE id = #{id}
+        AND date_del is NULL
+    </update>
+
+    <select id="bulkUser" resultType="integer">
+        INSERT INTO user_management(first_name, last_name, email, address, date_ins, date_upd)
+        VALUES
+        <foreach item="user" index="index" collection="userList" separator=",">
+            (#{user.firstName}, #{user.lastName}, #{user.email}, #{user.address}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        </foreach>
+        ;
+    </select>
+</mapper>
